@@ -1,25 +1,42 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import TaskForm from "./TaskForm"
 import TaskList from "./TaskList"
 
+const API_URL = "https://task-api-m07f.onrender.com/tasks"
+
 export const Tasks = () => {
   const [taskList, setTaskList] = useState([])
-  // define the setting state functions
-  const [loading] = useState(false)
-  const [newTodo] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [newTodo, setNewTodo] = useState("")
 
-  // fetch tasks
   const fetchTasks = async () => {
-    // set task list to be saved in the state
-  }
-  
-  const handleNewTodoChange = () => {
-    // set a  new ToDo from the value of the textarea defined in the TaskForm component
+    setLoading(true)
+    const response = await fetch(API_URL)
+    const data = await response.json()
+    setTaskList(data)
+    setLoading(false)
   }
 
-  const onFormSubmit = async () => {
-    // define your POST request for new ToDo
-    // don't forget to set the loading state
+  useEffect(() => {
+    fetchTasks()
+  }, [])
+
+  const handleNewTodoChange = (e) => {
+    setNewTodo(e.target.value)
+  }
+
+  const onFormSubmit = async (e) => {
+    e.preventDefault()
+    if (!newTodo.trim()) return
+
+    setLoading(true)
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: newTodo }),
+    })
+    setNewTodo("")
+    await fetchTasks()
   }
 
   return (

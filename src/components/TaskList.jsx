@@ -1,53 +1,50 @@
-const TaskList = ({ loading, taskList }) => {
+import { format } from "date-fns"
+
+const API_URL = "https://task-api-m07f.onrender.com/tasks"
+
+const TaskList = ({ loading, taskList, setTaskList }) => {
   if (loading) {
-    return <h1>Loading in progress...</h1>
+    return <p className="loading" aria-live="polite">Loading tasks...</p>
   }
 
-  const onTaskCheckChange = (task) => {
-    // Make a POST request here with the updated task isChecked value
-
-    /* 
-    update a state object
-    
-    updatedTask is a new object that is the same as the task object except for the isChecked property, 
-    which is toggled from true to false or from false to true. 
-    This code is often used to update a property of an object while preserving the rest of its properties. */
-
-    /*     pass the updatedTask to the headers of your POST request
-
-    headers: { updatedTask, "Content-Type": "application/json" }
-    */
-
+  const onTaskCheckChange = async (task) => {
     const updatedTask = { ...task, isChecked: !task.isChecked }
 
-    /*    Update the task list in the state
-    Use .map to update the specific task if found, otherwise return it unchanged
+    await fetch(`${API_URL}/${task._id}/check`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
 
-    setTaskList() 
-    */
+    setTaskList((prev) =>
+      prev.map((t) => (t._id === task._id ? updatedTask : t))
+    )
   }
 
+  const sortedTasks = [...taskList]
+    .sort((a, b) => b.date - a.date)
+    .slice(0, 10)
+
   return (
-    <section className="tasks">
-      {taskList
-        .map((task) => (
-          <div key={task._id} className="task">
+    <section className="tasks" aria-label="Task list">
+      {sortedTasks.length === 0 && (
+        <p className="empty">No tasks yet. Add one above!</p>
+      )}
+      {sortedTasks.map((task) => (
+        <div key={task._id} className={`task ${task.isChecked ? "task--checked" : ""}`}>
+          <label className="task-label">
             <input
-              onChange={()=> {}}
               type="checkbox"
               checked={task.isChecked}
+              onChange={() => onTaskCheckChange(task)}
+              aria-label={`Mark "${task.description}" as ${task.isChecked ? "incomplete" : "complete"}`}
             />
-            <h4>{task.description}</h4>
-
-          {/* format the date */}
-            <p>{task.date}</p>
-          </div>
-        ))
-        /* reverse the list to show the newest tasks at the top
-        
-        show only the latest 10 tasks
-        */
-        }
+            <span className="task-description">{task.description}</span>
+          </label>
+          <time className="task-date" dateTime={new Date(task.date).toISOString()}>
+            {format(new Date(task.date), "MMM d, yyyy 'at' HH:mm")}
+          </time>
+        </div>
+      ))}
     </section>
   )
 }

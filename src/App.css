@@ -1,21 +1,141 @@
 #root {
-  max-width: 1280px;
+  max-width: 700px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 2rem 1rem;
 }
 
+/* Form */
 form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
+  gap: 0.75rem;
+  background: #0a2020;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+form h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.8rem;
+}
+
+form h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #6ba8a0;
 }
 
 textarea {
-  min-width: 500px;
-  min-height: 100px;
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #1a4040;
+  background: #061414;
+  color: inherit;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  box-sizing: border-box;
 }
 
-button {
-  margin: 16px;
+textarea:focus {
+  outline: 2px solid #2dd4bf;
+  border-color: transparent;
+}
+
+button[type="submit"] {
+  align-self: flex-end;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  background: #2dd4bf;
+  color: #061414;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button[type="submit"]:hover {
+  background: #14b8a6;
+}
+
+button[type="submit"]:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Task list */
+.tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.task {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: #0a2020;
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  border-left: 4px solid #2dd4bf;
+  transition: opacity 0.2s;
+}
+
+.task--checked {
+  opacity: 0.5;
+  border-left-color: #1a4040;
+}
+
+.task-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+.task-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #2dd4bf;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.task-description {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.task--checked .task-description {
+  text-decoration: line-through;
+}
+
+.task-date {
+  font-size: 0.78rem;
+  color: #4a8880;
+  margin-left: calc(18px + 0.65rem);
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: #4a8880;
+  padding: 2rem 0;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  form {
+    padding: 1rem;
+  }
+
+  button[type="submit"] {
+    align-self: stretch;
+  }
 }
